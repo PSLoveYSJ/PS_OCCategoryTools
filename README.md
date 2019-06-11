@@ -8,3 +8,7 @@ Gradient
     
 UIlabel 
     PSCopyLabel 长按复制
+    
+
+Tools
+    QRCodeGenerateManager  二维码生成
