@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UIColor (PS)
 
++ (UIColor *) ps_randomColor;
+
 @end
 
 NS_ASSUME_NONNULL_END

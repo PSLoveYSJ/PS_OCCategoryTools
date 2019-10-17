@@ -83,7 +83,7 @@
     
 }
 
-- (UIImage *)imageWithColor:(UIColor *)color {
++ (UIImage *)imageWithColor:(UIColor *)color {
     UIGraphicsBeginImageContextWithOptions(self.size, NO, self.scale);
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextTranslateCTM(context, 0, self.size.height);
@@ -124,26 +124,48 @@
 
 @implementation UIImage(Radius)
 
-- (instancetype)initWithImage:(UIImage *) image size:(CGSize) size radius:(CGFloat)radius {
-    if (self == [super init]) {
-        UIGraphicsBeginImageContextWithOptions(size, NO, 0.0);
-        // 获得图形上下文
-        CGContextRef ctx = UIGraphicsGetCurrentContext();
-        // 设置一个范围
-        CGRect rect = CGRectMake(0, 0, size.width, size.height);
-        // 根据radius的值画出路线
-        CGContextAddPath(ctx, [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:radius].CGPath);
-        // 裁剪
-        CGContextClip(ctx);
-        // 将原照片画到图形上下文
-        [self drawInRect:rect];
-        // 从上下文上获取剪裁后的照片
-        UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-        // 关闭上下文
-        UIGraphicsEndImageContext();
-        self = newImage;
-    }
-    return self;
+- (instancetype)circleImage{
+    UIGraphicsBeginImageContextWithOptions(self.size, NO, 0);
+    UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(0, 0, self.size.width, self.size.height)];
+    [path addClip];
+    [self drawAtPoint:CGPointZero];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
+
++ (instancetype)circleImageNamed:(NSString *)name{
+    return [[self imageNamed:name] circleImage];
+}
+
+- (instancetype)circleImageBorderWidth:(CGFloat)borderWidth borderColor:(UIColor *)borderColor{
+    borderColor = !borderColor ? [UIColor whiteColor]:borderColor;
+    CGFloat imageW = self.size.width + 2 * borderWidth;
+    CGFloat imageH = self.size.height + 2 * borderWidth;
+    CGSize imageSize = CGSizeMake(imageW, imageH);
+    UIGraphicsBeginImageContextWithOptions(imageSize, NO, 0.0);
+    
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    
+    [borderColor set];
+    CGFloat bigRadius = imageW * 0.5;
+    CGFloat centerX = bigRadius;
+    CGFloat centerY = bigRadius;
+    CGContextAddArc(ctx, centerX, centerY, bigRadius, 0, M_PI * 2, 0);
+    CGContextFillPath(ctx);
+    
+    CGFloat smallRadius = bigRadius - borderWidth;
+    CGContextAddArc(ctx, centerX, centerY, smallRadius, 0, M_PI * 2, 0);
+    CGContextClip(ctx);
+    
+    [self drawInRect:CGRectMake(borderWidth, borderWidth, self.size.width, self.size.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
++ (instancetype)circleImageNamed:(NSString *)name borderWidth:(CGFloat)borderWidth borderColor:(UIColor *)borderColor{
+    return [[self imageNamed:name] circleImageBorderWidth:borderWidth borderColor:borderColor];
 }
 
 @end

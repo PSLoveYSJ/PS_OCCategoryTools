@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param color 颜色
  @return 图片
  */
--(UIImage *)imageWithColor:(UIColor *)color;
++(UIImage *)imageWithColor:(UIColor *)color;
 
 
 +(UIImage *)drawImagesize:(CGSize)size
@@ -46,8 +46,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UIImage(Radius)
 
+/**
+ 生成圆形图片
 
-- (instancetype)initWithImage:(UIImage *) image rect:(CGRect) rect radius:(CGFloat)radius;
+ @return
+ */
+- (instancetype)circleImage;
++ (instancetype)circleImageNamed:(NSString *)name;
+
++ (instancetype)circleImageNamed:(NSString *)name borderWidth:(CGFloat)borderWidth borderColor:(UIColor *)borderColor;
+- (instancetype)circleImageBorderWidth:(CGFloat)borderWidth borderColor:(UIColor *)borderColor;
+
 
 @end
 
